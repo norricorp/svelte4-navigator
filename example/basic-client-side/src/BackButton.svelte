@@ -4,4 +4,4 @@
 	const navigate = useNavigate();
 </script>
 
-<button title="Go back" on:click={() => navigate(-1)}>&lt;-</button>
+<button title="Go back" onclick={() => navigate(-1)}>&lt;-</button>

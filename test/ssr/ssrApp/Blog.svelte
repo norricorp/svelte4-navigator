@@ -14,6 +14,8 @@
 <Route path="second">
 	<div data-testid="blog-second">BLOG-SECOND</div>
 </Route>
-<Route path=":id" let:params>
-	<div data-testid="blog-params">{params.id}</div>
+<Route path=":id">
+	{#snippet children({ params })}
+		<div data-testid="blog-params">{params.id}</div>
+	{/snippet}
 </Route>

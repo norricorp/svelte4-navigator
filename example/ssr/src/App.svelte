@@ -6,7 +6,8 @@
 	import Blog from "./routes/Blog.svelte";
 
 	// Used for SSR. A falsy value is ignored by the Router.
-	export let url = "";
+	/** @type {{url?: string}} */
+	let { url = "" } = $props();
 </script>
 
 <Router {url}>

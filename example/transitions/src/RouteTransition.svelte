@@ -1,14 +1,10 @@
 <script>
 	import { fly } from "svelte/transition";
 
-	export let x = 200;
-	export let duration = 500;
-	/** @type {"forward"|"backward"} */
-	export let direction = "forward";
+	/** @type {{x?: number, duration?: number, direction?: "forward"|"backward", children?: import('svelte').Snippet}} */
+	let { x = 200, duration = 500, direction = "forward", children } = $props();
 
-	let directionFactor;
-
-	$: directionFactor = direction === "forward" ? 1 : -1;
+	let directionFactor = $derived(direction === "forward" ? 1 : -1);
 </script>
 
 <div
@@ -16,7 +12,7 @@
 	in:fly|global={{ x: x * directionFactor, duration }}
 	out:fly|global={{ x: -x * directionFactor, duration }}
 >
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

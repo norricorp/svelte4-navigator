@@ -1,19 +1,26 @@
+<!-- @migration-task Error while migrating Svelte code: $$props is used together with named props in a way that cannot be automatically migrated. -->
 <script>
 	import { onMount } from "svelte";
 
-	export let component;
-	export let delayMs = null;
+	const stuff = $props();
+	const { component, delayMs = null, ...rest } = $derived(stuff);
+	/* 	export let component;
+	export let delayMs = null; */
 
-	let loadedComponent = null;
+	let loadedComponent = $state(null);
 	let timeout;
-	let showFallback = !delayMs;
+	let showFallback = $state();
 
-	let props;
-	$: {
+	$effect(() => {
+		showFallback = !delayMs;
+	});
+
+	let properties = $state();
+	$effect(() => {
 		// eslint-disable-next-line no-shadow
-		const { component, delayMs, ...restProps } = $$props;
-		props = restProps;
-	}
+		const { component, delayMs, ...rest } = stuff;
+		properties = rest;
+	});
 
 	onMount(() => {
 		if (delayMs) {
@@ -29,7 +36,7 @@
 </script>
 
 {#if loadedComponent}
-	<svelte:component this={loadedComponent} {...props} />
+	<svelte:component this={loadedComponent} {...properties} />
 {:else if showFallback}
 	<slot />
 {/if}

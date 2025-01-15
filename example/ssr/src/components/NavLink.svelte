@@ -1,7 +1,8 @@
 <script>
 	import { Link } from "svelte-navigator";
 
-	export let to = "";
+	/** @type {{to?: string, children?: import('svelte').Snippet}} */
+	let { to = "", children } = $props();
 
 	// eslint-disable-next-line no-unused-vars
 	function getProps({ location, href, isPartiallyCurrent, isCurrent }) {
@@ -16,5 +17,5 @@
 </script>
 
 <Link {to} {getProps}>
-	<slot />
+	{@render children?.()}
 </Link>

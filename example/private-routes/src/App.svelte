@@ -37,7 +37,7 @@
 
 		<PrivateRoute path="profile">
 			<h3>Welcome {$user.username}</h3>
-			<button on:click={handleLogout}>Logout</button>
+			<button onclick={handleLogout}>Logout</button>
 		</PrivateRoute>
 	</main>
 </Router>

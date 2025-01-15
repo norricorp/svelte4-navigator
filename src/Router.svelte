@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
 	// eslint-disable-next-line import/order
 	import { createCounter, createInlineStyle, createMarkerProps } from "./utils";
 
@@ -6,6 +6,8 @@
 </script>
 
 <script>
+	import { run } from "svelte/legacy";
+
 	/*
 	 * Adapted from https://github.com/EmilTholin/svelte-routing
 	 *
@@ -28,12 +30,17 @@
 
 	const defaultBasepath = "/";
 
-	export let basepath = defaultBasepath;
-	export let url = null;
-	export let history = globalHistory;
-	export let primary = true;
-	export let a11y = {};
-	export let disableInlineStyles = false;
+	/** @type {{basepath?: any, url?: any, history?: any, primary?: boolean, a11y?: any,
+	 * disableInlineStyles?: boolean, children?: import('svelte').Snippet}} */
+	let {
+		basepath = defaultBasepath,
+		url = null,
+		history = globalHistory,
+		primary = true,
+		a11y = {},
+		disableInlineStyles = false,
+		children,
+	} = $props();
 
 	const a11yConfig = {
 		createAnnouncement: route => `Navigated to ${route.uri}`,
@@ -128,21 +135,23 @@
 			{ basepath },
 		);
 	}
-	$: if (basepath !== initialBasepath) {
-		warn(ROUTER_ID, 'You cannot change the "basepath" prop. It is ignored.');
-	}
+	run(() => {
+		if (basepath !== initialBasepath) {
+			warn(ROUTER_ID, 'You cannot change the "basepath" prop. It is ignored.');
+		}
+	});
 
 	// This reactive statement will be run when the Router is created
 	// when there are no Routes and then again the following tick, so it
 	// will not find an active Route in SSR and in the browser it will only
 	// pick an active Route after all Routes have been registered.
-	$: {
+	run(() => {
 		const bestMatch = pick($routes, $location.pathname);
 		activeRoute.set(bestMatch);
-	}
+	});
 
 	// Manage focus and announce navigation to screen reader users
-	$: {
+	run(() => {
 		if (isTopLevelRouter) {
 			const hasHash = !!$location.hash;
 			// When a hash is present in the url, we skip focus management, because
@@ -154,13 +163,15 @@
 				!hasHash || $location.pathname !== $prevLocation.pathname;
 			triggerFocus(shouldManageFocus, announceNavigation);
 		}
-	}
+	});
 
 	// Queue matched Route, so top level Router can decide which Route to focus.
 	// Non primary Routers should just be ignored
-	$: if (manageFocus && $activeRoute && $activeRoute.primary) {
-		pushFocusCandidate({ level, routerId, route: $activeRoute });
-	}
+	run(() => {
+		if (manageFocus && $activeRoute && $activeRoute.primary) {
+			pushFocusCandidate({ level, routerId, route: $activeRoute });
+		}
+	});
 
 	if (isTopLevelRouter) {
 		// The topmost Router in the tree is responsible for updating
@@ -197,9 +208,9 @@
 <div
 	{...createMarkerProps(shouldDisableInlineStyles)}
 	data-svnav-router={routerId}
-/>
+></div>
 
-<slot />
+{@render children?.()}
 
 {#if isTopLevelRouter && manageFocus && a11yConfig.announcements}
 	<div

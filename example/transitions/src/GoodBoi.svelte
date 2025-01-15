@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 
-	let src = "";
+	let src = $state("");
 
 	onMount(() => {
 		fetch("https://dog.ceo/api/breeds/image/random")

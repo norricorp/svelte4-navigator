@@ -35,9 +35,11 @@
 			<p>That's what it's all about!</p>
 		</Route>
 
-		<PrivateRoute path="profile" let:registerFocus>
-			<h3 use:registerFocus>Welcome {$user.username}</h3>
-			<button on:click={handleLogout}>Logout</button>
+		<PrivateRoute path="profile">
+			{#snippet children({ registerFocus })}
+				<h3 use:registerFocus>Welcome {$user.username}</h3>
+				<button onclick={handleLogout}>Logout</button>
+			{/snippet}
 		</PrivateRoute>
 	</main>
 </Router>

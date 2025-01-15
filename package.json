@@ -1,15 +1,15 @@
 {
   "name": "svelte-navigator",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Simple, accessible routing for Svelte",
   "main": "dist/svelte-navigator.umd.js",
   "unpkg": "dist/svelte-navigator.umd.min.js",
   "module": "dist/svelte-navigator.module.mjs",
   "svelte": "src/index.js",
-	"exports": {
-		".": {
-		"svelte": "src/index.js"
-		}
+  "exports": {
+    ".": {
+      "svelte": "src/index.js"
+    }
   },
   "types": "types/index.d.ts",
   "files": [
@@ -72,10 +72,10 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "svelte2tsx": "^0.6.19"
+    "svelte2tsx": "^0.7.33"
   },
   "peerDependencies": {
-    "svelte": "4.x"
+    "svelte": "5.x"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -91,13 +91,13 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/svelte": "^4.0.3",
+    "@testing-library/svelte": "^5.2.6",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^6.0.0",
-    "cheerio": "^1.0.0-rc.5",
+    "cheerio": "^1.0.0",
     "cypress": "^9.7.0",
     "eslint": "^7.18.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -106,7 +106,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-svelte": "^2.43.0",
+    "eslint-plugin-svelte": "^2.45.1",
     "globals": "^15.8.0",
     "husky": "^5.0.6",
     "is-ci": "^2.0.0",
@@ -123,9 +123,9 @@
     "rollup-plugin-svelte": "^7.2.2",
     "sirv-cli": "^1.0.10",
     "start-server-and-test": "^2.0.4",
-    "svelte": "^4.1.1",
+    "svelte": "^5.0.0",
     "svelte-jester": "^5.0.0",
-    "typescript": "5.1.6"
+    "typescript": "^5.5.0"
   },
   "nyc": {
     "report-dir": "coverage-cypress",

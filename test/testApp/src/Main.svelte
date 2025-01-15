@@ -121,15 +121,17 @@
 			</Link>
 			<Blog />
 		</Route>
-		<Route path="dashboard/:username/*" let:params>
-			<Link data-testid="link-dashboard-article-987" to="articles/987">
-				Article 987
-			</Link>
-			<Route path="/">Hello {params.username}!</Route>
-			<Route path="articles/:articleId">
-				Article
-				{params.articleId}
-			</Route>
+		<Route path="dashboard/:username/*">
+			{#snippet children({ params })}
+				<Link data-testid="link-dashboard-article-987" to="articles/987">
+					Article 987
+				</Link>
+				<Route path="/">Hello {params.username}!</Route>
+				<Route path="articles/:articleId">
+					Article
+					{params.articleId}
+				</Route>
+			{/snippet}
 		</Route>
 
 		<Route path="redirect-source">

@@ -1,7 +1,8 @@
 <script>
 	import { Route, Link } from "svelte-navigator";
 
-	export let blogRoute;
+	/** @type {{blogRoute: any}} */
+	let { blogRoute } = $props();
 </script>
 
 <div class="Blog">
@@ -21,9 +22,11 @@
 	</p>
 
 	<article>
-		<Route path=":id" let:params>
-			<h2>ID: {params.id}</h2>
-			<p>I don't know what to do with this...</p>
+		<Route path=":id">
+			{#snippet children({ params })}
+				<h2>ID: {params.id}</h2>
+				<p>I don't know what to do with this...</p>
+			{/snippet}
 		</Route>
 
 		<Route path="svelte">

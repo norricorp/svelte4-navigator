@@ -1,8 +1,8 @@
 <script>
 	import { useNavigate } from "../../../src";
 
-	export let to;
-	export let replace = false;
+	/** @type {{to: any, replace?: boolean}} */
+	let { to, replace = false } = $props();
 
 	const navigate = useNavigate();
 

@@ -1,20 +1,23 @@
+<!-- @migration-task Error while migrating Svelte code: $$props is used together with named props in a way that cannot be automatically migrated. -->
 <script>
 	import { Route } from "svelte-navigator";
 	import Lazy from "./Lazy.svelte";
 
-	export let component;
-	export let delayMs = null;
+	const stuff = $props();
+	const { component, delayMs = null, ...rest } = $derived(stuff);
+	/* 	export let component;
+	export let delayMs = null; */
 
-	let props;
-	$: {
+	let properties = $state();
+	$effect(() => {
 		// eslint-disable-next-line no-shadow
-		const { component, ...restProps } = $$props;
-		props = restProps;
-	}
+		const { component, ...restProps } = stuff;
+		properties = restProps;
+	});
 </script>
 
-<Route {...props}>
+<Route {...properties}>
 	<Lazy {component} {delayMs}>
-		<slot />
+		{@render stuff?.()}
 	</Lazy>
 </Route>

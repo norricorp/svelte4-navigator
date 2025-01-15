@@ -1,14 +1,16 @@
 <script>
+	import { run } from "svelte/legacy";
+
 	import { useLocation, useNavigate } from "svelte-navigator";
 
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	let url;
+	let url = $state();
 
-	$: {
+	run(() => {
 		url = $location.pathname;
-	}
+	});
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -21,10 +23,10 @@
 </script>
 
 <div>
-	<button type="submit" on:click={() => navigate(-1)}>&lt;-</button>
-	<button type="submit" on:click={() => navigate(1)}>-&gt;</button>
-	<form on:submit={handleSubmit}>
-		<input type="text" value={url} on:input={handleInput} />
+	<button type="submit" onclick={() => navigate(-1)}>&lt;-</button>
+	<button type="submit" onclick={() => navigate(1)}>-&gt;</button>
+	<form onsubmit={handleSubmit}>
+		<input type="text" value={url} oninput={handleInput} />
 		<button type="submit">GO</button>
 	</form>
 </div>

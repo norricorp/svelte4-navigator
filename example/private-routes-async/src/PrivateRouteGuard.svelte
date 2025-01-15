@@ -1,9 +1,13 @@
 <script>
+	import { run } from "svelte/legacy";
+
 	import { onMount } from "svelte";
 	import { useNavigate, useLocation, useFocus } from "svelte-navigator";
 	import { user, asyncCheckAuthStatus } from "./stores";
+	/** @type {{children?: import('svelte').Snippet<[any]>}} */
+	let { children } = $props();
 
-	let isChecking = true;
+	let isChecking = $state(true);
 
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -26,13 +30,15 @@
 		}
 	});
 
-	$: if (!$user && !isChecking) {
-		navigateToLogin();
-	}
+	run(() => {
+		if (!$user && !isChecking) {
+			navigateToLogin();
+		}
+	});
 </script>
 
 {#if $user && !isChecking}
-	<slot {registerFocus} />
+	{@render children?.({ registerFocus })}
 {/if}
 
 {#if isChecking}

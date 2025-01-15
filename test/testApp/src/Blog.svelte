@@ -43,14 +43,20 @@
 			<Match />
 			<div data-testid="route-blog-match">MATCH</div>
 		</Route>
-		<Route path="article/:id" let:params>
-			<div data-testid="route-blog-id">ARTICLE_ID:{params.id}</div>
+		<Route path="article/:id">
+			{#snippet children({ params })}
+				<div data-testid="route-blog-id">ARTICLE_ID:{params.id}</div>
+			{/snippet}
 		</Route>
-		<Route path="other/*" let:params>
-			<div data-testid="route-blog-id">SPLAT:{params["*"]}</div>
+		<Route path="other/*">
+			{#snippet children({ params })}
+				<div data-testid="route-blog-id">SPLAT:{params["*"]}</div>
+			{/snippet}
 		</Route>
-		<Route path="whatever/*splat" let:params>
-			<div data-testid="route-blog-id">NAMED_SPLAT:{params.splat}</div>
+		<Route path="whatever/*splat">
+			{#snippet children({ params })}
+				<div data-testid="route-blog-id">NAMED_SPLAT:{params.splat}</div>
+			{/snippet}
 		</Route>
 	</article>
 </Router>

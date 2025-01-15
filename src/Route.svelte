@@ -1,4 +1,6 @@
-<script context="module">
+<!-- @migration-task Error while migrating Svelte code: $$props is used together with
+  named props in a way that cannot be automatically migrated. -->
+<script module>
 	// eslint-disable-next-line import/order
 	import { createCounter, createMarkerProps } from "./utils";
 
@@ -27,12 +29,21 @@
 	import { join } from "./paths";
 	import { ROUTE_ID } from "./warning";
 
-	export let path = "";
+	const stuff = $props();
+	const {
+		path = "",
+		Component = null,
+		meta = {},
+		primary = true,
+		...rest
+	} = $derived(stuff);
+
+	/* 	export let path = "";
 	export let component = null;
 	export let meta = {};
-	export let primary = true;
+	export let primary = true; */
 
-	usePreflightCheck(ROUTE_ID, $$props);
+	usePreflightCheck(ROUTE_ID, stuff);
 
 	const id = createId();
 
@@ -45,10 +56,10 @@
 	// In SSR we cannot wait for $activeRoute to update,
 	// so we use the match returned from `registerRoute` instead
 	let ssrMatch;
-	let isActive;
+	let isActive = $state();
 
 	const route = writable();
-	$: {
+	$effect(() => {
 		// The route store will be re-computed whenever props, location or parentBase change
 		const isDefault = path === "";
 		const rawBase = join($parentBase, path);
@@ -70,15 +81,19 @@
 		// If we're in SSR mode and the Route matches,
 		// `registerRoute` will return the match
 		ssrMatch = registerRoute(updatedRoute);
-	}
+	});
 
-	$: isActive = !!(ssrMatch || ($activeRoute && $activeRoute.id === id));
+	$effect(() => {
+		isActive = !!(ssrMatch || ($activeRoute && $activeRoute.id === id));
+	});
 
 	const params = writable({});
-	$: if (isActive) {
-		const { params: activeParams } = ssrMatch || $activeRoute;
-		params.set(activeParams);
-	}
+	$effect(() => {
+		if (isActive) {
+			const { params: activeParams } = ssrMatch || $activeRoute;
+			params.set(activeParams);
+		}
+	});
 
 	setContext(ROUTE, route);
 	setContext(ROUTE_PARAMS, params);
@@ -95,7 +110,10 @@
 	}
 </script>
 
-<div {...createMarkerProps(disableInlineStyles)} data-svnav-route-start={id} />
+<div
+	{...createMarkerProps(disableInlineStyles)}
+	data-svnav-route-start={id}
+></div>
 {#if isActive}
 	<Router {primary}>
 		<!--
@@ -104,13 +122,13 @@
       `get(params)` always works, but is not reactive, so we can't
       use it in client rendered mode
     -->
-		{#if component !== null}
+		<!-- 		{#if component !== null}
 			<svelte:component
 				this={component}
 				location={$location}
 				{navigate}
 				{...isSSR ? get(params) : $params}
-				{...$$restProps}
+				{...rest}
 			/>
 		{:else}
 			<slot
@@ -118,7 +136,22 @@
 				location={$location}
 				{navigate}
 			/>
+		{/if} -->
+
+		{#if Component !== null}
+			<Component
+				{location}
+				{navigate}
+				{...isSSR ? get(params) : params}
+				{...rest}
+			/>
+		{:else}
+			{@render stuff(isSSR ? get(params) : $params, $location, navigate())}
 		{/if}
 	</Router>
 {/if}
-<div {...createMarkerProps(disableInlineStyles)} data-svnav-route-end={id} />
+
+<div
+	{...createMarkerProps(disableInlineStyles)}
+	data-svnav-route-end={id}
+></div>

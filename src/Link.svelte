@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: $$props is used together with named props
+ in a way that cannot be automatically migrated. -->
 <script>
 	/*
 	 * Adapted from https://github.com/EmilTholin/svelte-routing
@@ -17,45 +19,66 @@
 	import { LINK_ID } from "./warning";
 	import { parsePath, stringifyPath } from "./routes";
 
-	export let to;
+	const stuff = $props();
+	const {
+		to,
+		replace = false,
+		state = {},
+		getProps = null,
+		...rest
+	} = $derived(stuff);
+	/* 	export let to;
 	export let replace = false;
 	export let state = {};
-	export let getProps = null;
+	export let getProps = null; */
 
-	usePreflightCheck(LINK_ID, $$props);
+	usePreflightCheck(LINK_ID, stuff);
 
 	const location = useLocation();
 	const dispatch = createEventDispatcher();
 	const resolve = useResolve();
 	const { navigate } = useHistory();
 
-	let href;
+	let href = $state();
 	let isPartiallyCurrent;
 	let isCurrent;
 	let isExactCurrent;
-	let props;
-	let ariaCurrent;
+	let properties = $state();
+	let ariaCurrent = $state();
 
 	// We need to pass location here to force re-resolution of the link,
 	// when the pathname changes. Otherwise we could end up with stale path params,
 	// when for example an :id changes in the parent Routes path
-	$: href = resolve(to, $location);
-	$: isPartiallyCurrent = startsWith($location.pathname, href);
-	$: isCurrent = href === $location.pathname;
-	$: isExactCurrent = parsePath(href) === stringifyPath($location);
-	$: ariaCurrent = isCurrent ? { "aria-current": "page" } : {};
-	$: props = (() => {
-		if (isFunction(getProps)) {
-			const dynamicProps = getProps({
-				location: $location,
-				href,
-				isPartiallyCurrent,
-				isCurrent,
-			});
-			return { ...$$restProps, ...dynamicProps };
-		}
-		return $$restProps;
-	})();
+	$effect(() => {
+		href = resolve(to, $location);
+	});
+	$effect(() => {
+		isPartiallyCurrent = startsWith($location.pathname, href);
+	});
+	$effect(() => {
+		isCurrent = href === $location.pathname;
+	});
+	$effect(() => {
+		isExactCurrent = parsePath(href) === stringifyPath($location);
+	});
+	$effect(() => {
+		ariaCurrent = isCurrent ? { "aria-current": "page" } : {};
+	});
+
+	$effect(() => {
+		properties = (() => {
+			if (isFunction(getProps)) {
+				const dynamicProps = getProps({
+					location: $location,
+					href,
+					isPartiallyCurrent,
+					isCurrent,
+				});
+				return { ...rest, ...dynamicProps };
+			}
+			return rest;
+		})();
+	});
 
 	function onClick(event) {
 		dispatch("click", event);
@@ -70,6 +93,6 @@
 	}
 </script>
 
-<a {href} {...ariaCurrent} on:click={onClick} {...props}>
-	<slot />
+<a {href} {...ariaCurrent} onclick={onClick} {...properties}>
+	{@render stuff?.()}
 </a>

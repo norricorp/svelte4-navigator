@@ -5,8 +5,8 @@
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	let username;
-	let password;
+	let username = $state();
+	let password = $state();
 
 	function handleSubmit() {
 		user.set({ username, password });
@@ -16,7 +16,7 @@
 </script>
 
 <h3>Login</h3>
-<form on:submit={handleSubmit}>
+<form onsubmit={handleSubmit}>
 	<input
 		bind:value={username}
 		type="text"

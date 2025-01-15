@@ -2,11 +2,14 @@
 	import { Route } from "svelte-navigator";
 	import PrivateRouteGuard from "./PrivateRouteGuard.svelte";
 
-	export let path;
+	/** @type {{path: any, children?: import('svelte').Snippet<[any]>}} */
+	let { path, children } = $props();
 </script>
 
-<Route {path} let:params let:location let:navigate>
-	<PrivateRouteGuard>
-		<slot {params} {location} {navigate} />
-	</PrivateRouteGuard>
+<Route {path}>
+	{#snippet children({ params, location, navigate })}
+		<PrivateRouteGuard>
+			{@render children?.({ params, location, navigate })}
+		</PrivateRouteGuard>
+	{/snippet}
 </Route>
